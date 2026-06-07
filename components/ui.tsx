@@ -1,90 +1,86 @@
-import type { ReactNode } from "react";
 import Link from "next/link";
 import type { Route } from "next";
-import { formatDate, formatDateTime } from "@/lib/utils";
+import type { ReactNode } from "react";
+
+type BadgeTone = "neutral" | "success" | "warning" | "danger";
 
 export function PageHeader({
   title,
   description,
-  actions
+  actions,
 }: {
   title: string;
-  description: string;
+  description?: string;
   actions?: ReactNode;
 }) {
   return (
-    <div className="page-header">
+    <header className="page-header">
       <div>
         <h2>{title}</h2>
-        <p>{description}</p>
+        {description ? <p>{description}</p> : null}
       </div>
-      {actions}
-    </div>
+      {actions ? <div className="actions">{actions}</div> : null}
+    </header>
   );
 }
 
-export function MetricCard({
-  label,
-  value,
-  note
-}: {
-  label: string;
-  value: string | number;
-  note?: string;
-}) {
+export function MetricCard({ label, value, note }: { label: string; value: ReactNode; note?: string }) {
   return (
-    <section className="card">
-      <h3>{label}</h3>
-      <p className="metric">{value}</p>
-      {note ? <p className="metric-subtle">{note}</p> : null}
+    <section className="metric-card">
+      <p>{label}</p>
+      <strong>{value}</strong>
+      {note ? <span>{note}</span> : null}
     </section>
   );
 }
 
-export function Badge({
-  label,
-  tone = "neutral"
-}: {
-  label: string | boolean | null | undefined;
-  tone?: "neutral" | "success" | "warning" | "danger";
-}) {
-  const safeLabel = typeof label === "boolean" ? (label ? "Yes" : "No") : label || "—";
-  return <span className={`badge ${tone}`}>{safeLabel}</span>;
+export function Badge({ label, tone = "neutral" }: { label: ReactNode; tone?: BadgeTone }) {
+  return <span className={`badge ${tone}`}>{String(label)}</span>;
 }
 
-export function EmptyState({ title, body }: { title: string; body: string }) {
+export function DateCell({ value, time = false }: { value: string | null | undefined; time?: boolean }) {
+  if (!value) return <>-</>;
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return <>{value}</>;
+
   return (
-    <div className="empty-state">
-      <strong>{title}</strong>
-      <p className="small">{body}</p>
-    </div>
+    <>
+      {date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      })}
+      {time
+        ? ` ${date.toLocaleTimeString("en-US", {
+            hour: "numeric",
+            minute: "2-digit",
+          })}`
+        : ""}
+    </>
   );
 }
 
 export function FilterLinks({
   basePath,
   current,
-  options
+  options,
 }: {
   basePath: string;
   current: string;
   options: Array<{ value: string; label: string }>;
 }) {
   return (
-    <div className="filters">
-      {options.map((option) => {
-        const href = `${basePath}?view=${option.value}` as Route;
-
-        return (
-          <Link key={option.value} href={href} className={current === option.value ? "active" : ""}>
-            {option.label}
-          </Link>
-        );
-      })}
-    </div>
+    <nav className="filter-links">
+      {options.map((option) => (
+        <Link
+          key={option.value}
+          className={current === option.value ? "active" : undefined}
+          href={`${basePath}?view=${option.value}` as Route}
+        >
+          {option.label}
+        </Link>
+      ))}
+    </nav>
   );
-}
-
-export function DateCell({ value, time = false }: { value?: string | null; time?: boolean }) {
-  return <span>{time ? formatDateTime(value) : formatDate(value)}</span>;
 }

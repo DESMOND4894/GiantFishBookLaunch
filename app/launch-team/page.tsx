@@ -2,9 +2,10 @@ import { createLaunchTeamMember, updateLaunchTeamStatus, deleteLaunchTeamMember 
 import { AddMemberButton } from "@/components/add-member-modal";
 import { LaunchTeamActions } from "@/components/launch-team-actions";
 import { SendPdfButton } from "@/components/send-pdf-modal";
+import { ScreenshotModal } from "@/components/admin/screenshot-modal";
 import { Badge, DateCell, FilterLinks, PageHeader } from "@/components/ui";
 import { getLaunchTeam } from "@/lib/data";
-import { requireAdmin } from "@/lib/auth";
+import { getSupabaseAdminClient } from "@/lib/supabase";
 
 type PageProps = {
   searchParams?: Promise<{ view?: string; saved?: string }>;
@@ -39,13 +40,30 @@ function filterMembers(view: string, members: Awaited<ReturnType<typeof getLaunc
   }
 }
 
+async function getReviewProofUrl(path: string): Promise<string | null> {
+  if (path.startsWith("http")) return path;
+
+  const client = getSupabaseAdminClient();
+  if (!client) return null;
+
+  const { data } = await client.storage.from("proof-of-purchase").createSignedUrl(path, 3600);
+  return data?.signedUrl ?? null;
+}
+
 export default async function LaunchTeamPage({ searchParams }: PageProps) {
-  await requireAdmin("/launch-team");
   const params = (await searchParams) ?? {};
   const view = params.view || "all";
   const saved = params.saved;
   const members = await getLaunchTeam();
   const filtered = filterMembers(view, members);
+  const reviewProofUrls: Record<string, string> = {};
+
+  for (const member of filtered) {
+    if (member.review_link) {
+      const url = await getReviewProofUrl(member.review_link);
+      if (url) reviewProofUrls[member.id] = url;
+    }
+  }
 
   return (
     <div className="page">
@@ -82,6 +100,7 @@ export default async function LaunchTeamPage({ searchParams }: PageProps) {
               <th>Agreed</th>
               <th>ARC</th>
               <th>Review</th>
+              <th>Proof</th>
               <th>Follow-up</th>
               <th>Launch party</th>
               <th></th>
@@ -115,6 +134,13 @@ export default async function LaunchTeamPage({ searchParams }: PageProps) {
                 <td><Badge label={member.agreed_to_read_review} tone={member.agreed_to_read_review ? "success" : "neutral"} /></td>
                 <td><Badge label={member.arc_sent} tone={member.arc_sent ? "success" : "warning"} /></td>
                 <td><Badge label={member.review_posted} tone={member.review_posted ? "success" : "warning"} /></td>
+                <td>
+                  {reviewProofUrls[member.id] ? (
+                    <ScreenshotModal url={reviewProofUrls[member.id]} />
+                  ) : (
+                    <span className="small" style={{ color: "var(--text-soft)" }}>None</span>
+                  )}
+                </td>
                 <td><DateCell value={member.follow_up_due} /></td>
                 <td><Badge label={member.review_posted || member.launch_party_invited} tone={member.review_posted || member.launch_party_invited ? "success" : "neutral"} /></td>
                 <td>

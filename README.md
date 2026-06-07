@@ -45,7 +45,7 @@ If Supabase env vars are missing, the UI falls back to mock data so the scaffold
 
 ## Notes
 
-- Launch target defaults to `2026-05-26`, immediately after Memorial Day 2026, and remains editable in Settings.
+- Launch target defaults to `2026-05-04` and remains editable in Settings.
 - Outreach and content workflows stay draft-first.
 - Coupon fulfillment remains manual-first.
 - Out-of-scope automation is intentionally not implemented in V1.

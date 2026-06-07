@@ -1,42 +1,96 @@
-import { Suspense } from "react";
-import { SubmitReviewForm } from "./SubmitReviewForm";
+"use client";
 
-export const metadata = {
-  title: "Submit your review — Giant Fish & Happiness",
-};
+import { useActionState } from "react";
+import Image from "next/image";
+import { submitReviewLink } from "@/app/actions";
 
-export default async function SubmitReviewPage({
-  searchParams,
+const initialState = { ok: false, message: "" };
+
+function ReviewProofForm({
+  pending,
+  message,
 }: {
-  searchParams: Promise<{ token?: string }>;
+  pending: boolean;
+  message: string;
 }) {
-  const params = await searchParams;
-  const token = (params.token || "").trim();
+  return (
+    <>
+      <div className="poster-form-heading">
+        <span>Confirm Your Spot</span>
+        <p>Post your review, then upload a screenshot below and you&apos;re all set.</p>
+      </div>
+      <div className="poster-field">
+        <label htmlFor="review-email">Email</label>
+        <input
+          id="review-email"
+          name="email"
+          type="email"
+          required
+          placeholder="Enter the email you used to join the launch team"
+        />
+      </div>
+      <div className="poster-field poster-upload">
+        <label htmlFor="review-proof">Upload review screenshot</label>
+        <input
+          id="review-proof"
+          name="review_proof"
+          type="file"
+          accept="image/*"
+          required
+        />
+        <p>PNG, JPG, WEBP, or HEIC. Max 10MB.</p>
+      </div>
+      <button className="poster-submit" type="submit" disabled={pending}>
+        {pending ? "Submitting..." : "Confirm My Spot"}
+      </button>
+      {message ? <p className="poster-error">{message}</p> : null}
+    </>
+  );
+}
+
+export default function SubmitReviewPage() {
+  const [state, action, pending] = useActionState(submitReviewLink, initialState);
 
   return (
-    <div className="page" style={{ maxWidth: 840, margin: "0 auto", paddingTop: 40 }}>
-      <section className="hero">
-        <h2>Submit Your Amazon Review</h2>
-        <p>
-          Thank you for reading Giant Fish &amp; Happiness! Once you&apos;ve posted your honest
-          review on Amazon, submit the link below to confirm your spot on the Celtic Quest
-          launch party trip this summer.
-        </p>
+    <main className="poster-page">
+      <section className="poster-shell poster-shell-cropped" aria-label="Launch party invitation">
+        <Image
+          src="/launch-party-poster.png"
+          alt="Giant Fish and Happiness launch party invitation"
+          width={1024}
+          height={1536}
+          className="poster-artwork"
+          priority
+        />
       </section>
 
-      {!token ? (
-        <section className="panel" style={{ padding: "32px 24px" }}>
-          <h3>Use your personal link</h3>
-          <p>
-            This form only works from the personalized link we emailed you. If you can&apos;t find it,
-            reply to the ARC email Des sent you and he&apos;ll send a fresh link.
-          </p>
+      {state.ok ? (
+        <section className="poster-success-card">
+          <div className="poster-success-mark">✓</div>
+          <h1>You&apos;re on the list!</h1>
+          <p>{state.message}</p>
         </section>
-      ) : (
-        <Suspense>
-          <SubmitReviewForm token={token} />
-        </Suspense>
-      )}
-    </div>
+      ) : null}
+
+      <section className="poster-happening-full">
+        <h2>Here&apos;s what&apos;s happening!</h2>
+        <div className="poster-happening-grid">
+          <p>Hit the water and do some fishing with the Celtic Quest crew.</p>
+          <p>I&apos;ll sign books for everyone who comes aboard.</p>
+          <p>We&apos;ll share stories, talk about the good old days, and make new memories.</p>
+          <p>Cold drinks, good laughs, and a celebration you won&apos;t want to miss.</p>
+        </div>
+      </section>
+
+      {!state.ok ? (
+        <form action={action} className="poster-real-form">
+          <ReviewProofForm pending={pending} message={state.message} />
+        </form>
+      ) : null}
+
+      <footer className="poster-signoff">
+        Thank you again. Can&apos;t wait to see you soon! - Des
+      </footer>
+    </main>
   );
 }

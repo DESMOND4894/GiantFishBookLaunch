@@ -5,18 +5,21 @@ import type {
   ContentItem,
   CouponClaim,
   LaunchTask,
+  LaunchPartyRsvp,
   LaunchTeamMember,
   OutreachContact,
   PurchaseSubmission,
   Review
 } from "@/lib/types";
 
+export const mockRsvps: LaunchPartyRsvp[] = [];
+
 export const mockSettings: AppSettings = {
   id: 1,
   launch_target_date: DEFAULT_LAUNCH_DATE,
   launch_phase: "foundation",
   admin_contact: "Des O'Sullivan",
-  memorial_day_note: "No hard launch activity on Memorial Day weekend.",
+  memorial_day_note: "Book launch moved to May 4, 2026.",
   created_at: "2026-03-30T10:00:00.000Z",
   updated_at: "2026-03-30T10:00:00.000Z"
 };
@@ -41,8 +44,8 @@ export const mockTasks: LaunchTask[] = [
   },
   {
     id: "task-2",
-    title: "Set exact launch date after Memorial Day",
-    description: "Confirm the precise live date immediately after Memorial Day 2026.",
+    title: "Confirm May 4 launch date",
+    description: "Confirm the book listing and launch timing for May 4, 2026.",
     category: "ops",
     phase: "foundation",
     status: "in_progress",
@@ -51,7 +54,7 @@ export const mockTasks: LaunchTask[] = [
     due_date: "2026-04-05",
     start_date: "2026-03-31",
     dependency_notes: "Needed before final outreach calendar is locked.",
-    notes: "Default target currently set to May 26, 2026.",
+    notes: "Default target currently set to May 4, 2026.",
     completed_at: null,
     created_at: "2026-03-30T10:00:00.000Z",
     updated_at: "2026-03-31T08:00:00.000Z"
@@ -211,11 +214,11 @@ export const mockContent: ContentItem[] = [
     platform: "email",
     theme: "launch",
     status: "drafting",
-    draft_copy: "Working first pass for launch announcement.",
+    draft_copy: "Hi friends,\n\nI'm so excited to share that Giant Fish & Happiness is finally live.\n\nThis book has been a long time coming, and the support has honestly been touching and overwhelming. So many of you have encouraged me, asked about the book, cheered it on, and helped me get to this point. I appreciate it more than I can say.\n\nYou can get the book here:\n\n[AMAZON BOOK LINK]\n\nAs a special launch thank-you, I'm also offering a $20 Celtic Quest Fishing coupon to anyone who buys the book.\n\nThe book is $19.99, so the coupon basically covers the cost of the book, and you can use it toward any Celtic Quest trip you'd like.\n\nHere's how it works:\n\n1. Buy Giant Fish & Happiness on Amazon.\n2. Submit your Amazon order number here: [COUPON CLAIM LINK]\n3. After we verify the purchase, we'll email you a $20 Celtic Quest coupon within 24 hours.\n\nThank you again for being part of this with me. I'm grateful, excited, and a little overwhelmed in the best possible way.\n\nGod bless,\n\nCaptain Des O'Sullivan\nCeltic Quest Fishing Fleet",
     asset_needed: false,
     asset_notes: null,
-    cta: "Buy the book and submit proof of purchase.",
-    scheduled_for: "2026-05-26T13:00:00.000Z",
+    cta: "Buy the book and submit an Amazon order number to claim the $20 coupon.",
+    scheduled_for: "2026-05-04T13:00:00.000Z",
     posted_at: null,
     notes: null,
     created_at: "2026-04-01T08:00:00.000Z",
@@ -247,7 +250,7 @@ export const mockPurchases: PurchaseSubmission[] = [
     email: "jordan@example.com",
     proof_file_path: "proof-of-purchase/jordan-order-1001.png",
     submission_notes: "Bought two copies.",
-    submitted_at: "2026-05-26T18:15:00.000Z",
+    submitted_at: "2026-05-04T18:15:00.000Z",
     verification_status: "pending",
     verified_at: null,
     verified_by: null,
@@ -258,8 +261,8 @@ export const mockPurchases: PurchaseSubmission[] = [
     raffle_entered_at: null,
     raffle_notes: null,
     notes: null,
-    created_at: "2026-05-26T18:15:00.000Z",
-    updated_at: "2026-05-26T18:15:00.000Z"
+    created_at: "2026-05-04T18:15:00.000Z",
+    updated_at: "2026-05-04T18:15:00.000Z"
   }
 ];
 

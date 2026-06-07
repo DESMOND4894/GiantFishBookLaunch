@@ -1,6 +1,6 @@
 insert into public.app_settings (id, launch_target_date, launch_phase, admin_contact, memorial_day_note)
 values
-  (1, date '2026-05-26', 'foundation', 'Des O''Sullivan', 'No hard launch activity on Memorial Day weekend.')
+  (1, date '2026-05-04', 'launch_week', 'Des O''Sullivan', 'Book launch moved to May 4, 2026.')
 on conflict (id) do update
 set
   launch_target_date = excluded.launch_target_date,
@@ -11,7 +11,7 @@ set
 insert into public.launch_tasks (title, description, category, phase, status, priority, owner, due_date, notes)
 values
   ('Finalize command center spec', 'Lock the operating model and required modules.', 'build', 'foundation', 'done', 'high', 'Skipper', date '2026-03-31', 'Starter task from spec'),
-  ('Set exact launch date after Memorial Day', 'Confirm the precise live date immediately after Memorial Day 2026.', 'ops', 'foundation', 'in_progress', 'critical', 'Des', date '2026-04-05', 'Default target is May 26, 2026 pending explicit final confirmation'),
+  ('Confirm May 4 launch date', 'Confirm the book listing and launch timing for May 4, 2026.', 'ops', 'foundation', 'in_progress', 'critical', 'Des', date '2026-04-05', 'Default target is May 4, 2026.'),
   ('Build launch team list', 'Create initial prospect list.', 'launch_team', 'recruitment', 'not_started', 'high', 'Skipper', date '2026-04-07', null),
   ('Draft launch team invitation copy', 'Prepare draft-only invitation language for approval.', 'launch_team', 'recruitment', 'not_started', 'high', 'Skipper', date '2026-04-08', null),
   ('Draft ARC instructions', 'Prepare instructions for readers receiving the advance copy.', 'launch_team', 'arc', 'not_started', 'medium', 'Skipper', date '2026-04-10', null),
@@ -37,7 +37,7 @@ values
 
 insert into public.content_items (title, content_type, platform, theme, status, draft_copy, asset_needed, cta, scheduled_for, notes)
 values
-  ('Launch email #1', 'email', 'email', 'launch', 'drafting', 'Working first pass for launch announcement.', false, 'Buy the book and submit proof of purchase.', timestamptz '2026-05-26 13:00:00+00', null),
+  ('Launch email #1', 'email', 'email', 'launch', 'drafting', 'Hi friends,\n\nI''m so excited to share that Giant Fish & Happiness is finally live.\n\nThis book has been a long time coming, and the support has honestly been touching and overwhelming. So many of you have encouraged me, asked about the book, cheered it on, and helped me get to this point. I appreciate it more than I can say.\n\nYou can get the book here:\n\n[AMAZON BOOK LINK]\n\nAs a special launch thank-you, I''m also offering a $20 Celtic Quest Fishing coupon to anyone who buys the book.\n\nThe book is $19.99, so the coupon basically covers the cost of the book, and you can use it toward any Celtic Quest trip you''d like.\n\nHere''s how it works:\n\n1. Buy Giant Fish & Happiness on Amazon.\n2. Submit your Amazon order number here: [COUPON CLAIM LINK]\n3. After we verify the purchase, we''ll email you a $20 Celtic Quest coupon within 24 hours.\n\nThank you again for being part of this with me. I''m grateful, excited, and a little overwhelmed in the best possible way.\n\nGod bless,\n\nCaptain Des O''Sullivan\nCeltic Quest Fishing Fleet', false, 'Buy the book and submit an Amazon order number to claim the $20 coupon.', timestamptz '2026-05-04 13:00:00+00', null),
   ('Father''s Day email', 'email', 'email', 'fathers_day', 'idea', null, true, 'Order for Father''s Day.', timestamptz '2026-06-10 15:00:00+00', 'Need hero photo and gift angle');
 
 insert into public.activity_log (event_type, entity_type, summary, details, created_by)

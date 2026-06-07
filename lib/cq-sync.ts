@@ -1,14 +1,6 @@
-export function hasCqEnv(): boolean {
-  return Boolean(process.env.CQ_SUPABASE_URL && process.env.CQ_SUPABASE_SERVICE_ROLE_KEY);
-}
+import { createClient } from "@supabase/supabase-js";
 
-type CqSyncResult = {
-  ok: boolean;
-  cqCouponId?: string;
-  error?: string;
-};
-
-type CouponData = {
+type SyncCouponInput = {
   coupon_code: string;
   email: string;
   first_name: string;
@@ -16,46 +8,55 @@ type CouponData = {
   coupon_value_cents: number;
 };
 
-export async function syncCouponToCq(claim: CouponData): Promise<CqSyncResult> {
-  if (!hasCqEnv()) {
-    return { ok: false, error: "CQ credentials not configured." };
+type SyncCouponResult = {
+  ok: boolean;
+  cqCouponId?: string;
+  error?: string;
+};
+
+export async function syncCouponToCq(input: SyncCouponInput): Promise<SyncCouponResult> {
+  const url = process.env.CQ_SUPABASE_URL;
+  const key = process.env.CQ_SUPABASE_SERVICE_ROLE_KEY;
+  const table = process.env.CQ_COUPONS_TABLE || "vouchers";
+
+  if (!url || !key) {
+    return { ok: false, error: "CQ Supabase credentials are not configured." };
   }
 
-  const url = process.env.CQ_SUPABASE_URL!;
-  const key = process.env.CQ_SUPABASE_SERVICE_ROLE_KEY!;
+  const client = createClient(url, key, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  });
 
-  try {
-    const res = await fetch(`${url}/rest/v1/coupons`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        apikey: key,
-        Authorization: `Bearer ${key}`,
-        Prefer: "return=representation",
-      },
-      body: JSON.stringify({
-        code: claim.coupon_code,
-        description: "Book Purchase — Giant Fish and Happiness",
-        discount_amount: claim.coupon_value_cents,
-        discount_type: "fixed",
-        tag: "book-purchase",
-        customer_email: claim.email,
-        customer_name: `${claim.first_name} ${claim.last_name}`,
-        status: "active",
-        source: "book-launch-portal",
-      }),
-    });
+  const code = input.coupon_code.toUpperCase();
+  const discountValue = input.coupon_value_cents / 100;
+  const recipientName = `${input.first_name} ${input.last_name}`.trim();
 
-    if (!res.ok) {
-      const text = await res.text();
-      return { ok: false, error: `CQ API error ${res.status}: ${text}` };
-    }
+  const { data, error } = await client
+    .from(table)
+    .insert({
+      code,
+      discount_type: "fixed",
+      discount_value: discountValue,
+      max_uses: 1,
+      max_uses_per_customer: 1,
+      is_active: true,
+      applies_to_all_products: true,
+      is_per_person_discount: false,
+      source: "promo",
+      recipient_name: recipientName || null,
+      recipient_email: input.email,
+      notes: "Giant Fish & Happiness book launch coupon",
+    })
+    .select("id")
+    .single();
 
-    const data = await res.json();
-    const cqCouponId = Array.isArray(data) ? data[0]?.id : data?.id;
-    return { ok: true, cqCouponId: cqCouponId ?? undefined };
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error";
-    return { ok: false, error: `CQ sync failed: ${message}` };
+  if (error) {
+    console.error("CQ coupon sync failed:", error);
+    return { ok: false, error: error.message };
   }
+
+  return { ok: true, cqCouponId: data?.id ? String(data.id) : undefined };
 }

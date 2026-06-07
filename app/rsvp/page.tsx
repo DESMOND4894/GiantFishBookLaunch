@@ -1,0 +1,52 @@
+import { RsvpForm } from "@/components/rsvp-form";
+import { getRsvps } from "@/lib/data";
+
+export const dynamic = "force-dynamic";
+
+export default async function RsvpPage() {
+  const rsvps = await getRsvps();
+  const totalPeople = rsvps.reduce((sum, r) => sum + (r.party_size || 1), 0);
+
+  return (
+    <div className="lt-landing">
+      <section className="lt-hero">
+        <div className="lt-hero-glow" />
+        <div className="lt-hero-inner">
+          <div className="lt-hero-text">
+            <p className="lt-eyebrow">Launch Party Trip</p>
+            <h1 className="lt-title">Come Fishing Friday Night</h1>
+            <p className="lt-subtitle">
+              A free trip on the Celtic Quest to celebrate the launch of
+              Giant Fish &amp; Happiness
+            </p>
+            <p className="lt-hook">
+              I&apos;m hosting a launch party trip out of Port Jefferson and I&apos;d
+              love for you to be aboard. We&apos;ll fish, share stories, and have a
+              great night on the water.
+            </p>
+            <p className="lt-hook">
+              Just let me know you&apos;re coming so I can get a headcount.
+            </p>
+            <div className="rsvp-counter">
+              <span className="rsvp-counter-number">{totalPeople}</span>
+              <span className="rsvp-counter-label">
+                {totalPeople === 1 ? "person coming so far" : "people coming so far"}
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="lt-form-section" id="rsvp">
+        <RsvpForm />
+      </section>
+
+      <footer className="lt-footer">
+        <p>
+          Captain Desmond O&apos;Sullivan &middot; Celtic Quest Fishing Fleet &middot;
+          Port Jefferson, Long Island, NY
+        </p>
+      </footer>
+    </div>
+  );
+}

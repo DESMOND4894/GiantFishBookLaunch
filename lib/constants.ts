@@ -1,4 +1,4 @@
-export const DEFAULT_LAUNCH_DATE = "2026-05-26";
+export const DEFAULT_LAUNCH_DATE = "2026-05-04";
 
 export const NAV_ITEMS = [
   { href: "/dashboard", label: "Dashboard" },
@@ -8,6 +8,7 @@ export const NAV_ITEMS = [
   { href: "/content", label: "Content" },
   { href: "/purchases", label: "Purchases" },
   { href: "/admin/coupons", label: "Coupons" },
+  { href: "/admin/rsvps", label: "RSVPs" },
   { href: "/reviews", label: "Reviews" },
   { href: "/activity", label: "Activity" },
   { href: "/settings", label: "Settings" }

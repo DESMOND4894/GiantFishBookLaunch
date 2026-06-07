@@ -70,7 +70,7 @@ $$;
 
 create table if not exists public.app_settings (
   id bigint primary key default 1,
-  launch_target_date date not null default date '2026-05-26',
+  launch_target_date date not null default date '2026-05-04',
   launch_phase text not null default 'foundation',
   admin_contact text,
   memorial_day_note text,

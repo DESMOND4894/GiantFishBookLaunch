@@ -3,15 +3,13 @@ import { SettingsForm } from "@/components/forms";
 import { ArcPdfUpload } from "@/components/arc-pdf-upload";
 import { PageHeader } from "@/components/ui";
 import { getSettings } from "@/lib/data";
-import { requireAdmin } from "@/lib/auth";
 
 export default async function SettingsPage() {
-  await requireAdmin("/settings");
   const settings = await getSettings();
 
   return (
     <div className="page">
-      <PageHeader title="Settings" description="Lightweight V1 settings for launch target date, current phase, and the Memorial Day launch constraint." />
+      <PageHeader title="Settings" description="Lightweight V1 settings for launch target date, current phase, and admin contact details." />
       <section className="panel">
         <h3>Launch configuration</h3>
         <SettingsForm

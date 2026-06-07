@@ -1,11 +1,9 @@
 import { getDashboardData } from "@/lib/data";
 import { getCountdown } from "@/lib/utils";
 import { MetricCard, PageHeader, Badge, DateCell } from "@/components/ui";
-import { requireAdmin } from "@/lib/auth";
 
 export default async function DashboardPage() {
-  await requireAdmin("/dashboard");
-  const { settings, tasks, launchTeam, outreach, purchases, reviews, activity } = await getDashboardData();
+  const { settings, tasks, launchTeam, outreach, purchases, reviews, activity, rsvps } = await getDashboardData();
   const countdown = getCountdown(settings.launch_target_date);
   const topPriorities = tasks
     .filter((task) => task.status !== "done")
@@ -21,6 +19,7 @@ export default async function DashboardPage() {
   const reviewsPosted = reviews.filter((review) => ["posted", "verified"].includes(review.status)).length;
   const outreachPending = outreach.filter((contact) => ["draft_ready", "awaiting_approval", "approved_to_send", "follow_up_due"].includes(contact.status)).length;
   const pendingPurchases = purchases.filter((purchase) => purchase.verification_status === "pending").length;
+  const fridayHeadcount = rsvps.reduce((sum, r) => sum + (r.party_size || 1), 0);
 
   return (
     <div className="page">
@@ -38,7 +37,17 @@ export default async function DashboardPage() {
         <MetricCard label="Reviews posted" value={reviewsPosted} />
         <MetricCard label="Outreach pending" value={outreachPending} />
         <MetricCard label="Purchase verifications pending" value={pendingPurchases} />
+        <MetricCard label="Friday trip headcount" value={fridayHeadcount} note={`${rsvps.length} RSVPs • manage on the RSVPs tab`} />
       </div>
+
+      <section className="panel">
+        <h3>Launch party RSVP page</h3>
+        <p className="small">
+          Share this public link in your email so people can RSVP for the Friday trip:{" "}
+          <a href="/rsvp">/rsvp</a>. Manage the list and add friends by hand on the{" "}
+          <a href="/admin/rsvps">RSVPs tab</a>.
+        </p>
+      </section>
 
       <div className="split">
         <section className="panel">

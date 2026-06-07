@@ -35,7 +35,7 @@ export default function JoinLaunchTeamPage() {
             <p className="lt-hook">
               If you want to help me out, just sign up below. I&apos;ll email you an advance
               reader copy PDF. Over the next several weeks, enjoy reading it — hopefully
-              it&apos;s quick, easy, and enjoyable for you. When we launch at the end of May,
+              it&apos;s quick, easy, and enjoyable for you. When we launch on May 4th,
               whenever you&apos;re ready, just head to Amazon and leave a review. Hopefully
               a positive one — LOL.
             </p>
@@ -72,19 +72,19 @@ export default function JoinLaunchTeamPage() {
       <section className="lt-form-section" id="signup">
         {state.ok ? (
           <div className="lt-success-card">
-            <div className="lt-success-icon">&#9993;</div>
-            <h2>Check your email</h2>
+            <div className="lt-success-icon">&#10003;</div>
+            <h2>You&apos;re on the team!</h2>
             <p>{state.message}</p>
             <p className="lt-success-note">
-              Didn&apos;t get the email within a minute? Check your spam folder, then try again
-              with the same address if needed.
+              Didn&apos;t get the email? Check your spam folder, or sign up again with the
+              same email and we&apos;ll re-send it.
             </p>
           </div>
         ) : (
           <div className="lt-form-card">
             <h2>Get Your Free Advance Copy</h2>
             <p className="lt-form-desc">
-              Sign up below and we&apos;ll email you a confirmation link. Click it and the book is yours.
+              Sign up below and we&apos;ll email you the book right away.
             </p>
             <form action={action} className="lt-form">
               <div className="lt-field">
@@ -119,8 +119,8 @@ export default function JoinLaunchTeamPage() {
         <div className="lt-steps">
           <div className="lt-step">
             <div className="lt-step-num">1</div>
-            <h3>Sign Up &amp; Confirm</h3>
-            <p>Enter your name and email. Click the confirmation link in your inbox and the book is on its way.</p>
+            <h3>Sign Up</h3>
+            <p>Enter your name and email above. We&apos;ll send you the book immediately.</p>
           </div>
           <div className="lt-step">
             <div className="lt-step-num">2</div>
@@ -130,7 +130,7 @@ export default function JoinLaunchTeamPage() {
           <div className="lt-step">
             <div className="lt-step-num">3</div>
             <h3>Post a Review</h3>
-            <p>When we launch May 26th, post an honest review on Amazon.</p>
+            <p>When we launch May 4th, post an honest review on Amazon.</p>
           </div>
           <div className="lt-step">
             <div className="lt-step-num">4</div>

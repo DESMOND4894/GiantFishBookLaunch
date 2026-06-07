@@ -2,6 +2,10 @@
 node_modules
 .env
 .env.local
+.env.production
+.env.vercel*
+# Contact list exports contain personal info — never commit
+*.csv
 npm-debug.log*
 supabase/.temp
 .vercel
@@ -13,5 +17,3 @@ tsconfig.tsbuildinfo
 * 2
 *\ 2.*
 *\ 2
-.env*.local
-.env.production

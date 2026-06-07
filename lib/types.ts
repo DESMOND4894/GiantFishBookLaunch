@@ -167,6 +167,17 @@ export type CouponClaim = {
   sent_at: string | null;
 };
 
+export type LaunchPartyRsvp = {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  full_name: string;
+  email: string | null;
+  party_size: number;
+  source: "self" | "manual";
+  notes: string | null;
+};
+
 export type AppSettings = {
   id: number;
   launch_target_date: string;

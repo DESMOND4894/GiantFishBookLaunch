@@ -83,93 +83,6 @@ export async function sendArcEmail(
   }
 }
 
-export async function sendVerificationEmail(
-  to: string,
-  name: string,
-  verifyUrl: string
-): Promise<{ ok: boolean; error?: string }> {
-  const client = getResendClient();
-  if (!client) {
-    return { ok: false, error: "Resend not configured." };
-  }
-
-  const fromEmail = process.env.RESEND_FROM_EMAIL || "desmond@cqfleet.com";
-
-  const html = `
-    <div style="font-family: Georgia, 'Times New Roman', serif; max-width: 600px; margin: 0 auto; padding: 32px 24px; color: #1a1a1a; line-height: 1.7;">
-      <h1 style="font-size: 22px; margin-bottom: 20px; color: #1a3a5c;">Confirm your email</h1>
-      <p>Hi ${name},</p>
-      <p>Thanks for asking to join the Giant Fish &amp; Happiness launch team. To confirm this is really your email and send you the advance copy, please click the link below:</p>
-      <p style="margin: 28px 0;">
-        <a href="${verifyUrl}" style="background:#1a3a5c;color:#fff;padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:bold;">Confirm my email</a>
-      </p>
-      <p style="color:#555;font-size:14px;">If you didn't sign up, just ignore this email — nothing will happen. The link expires in 24 hours.</p>
-      <p style="margin-top:32px;">Thanks,<br/><strong>Des O'Sullivan</strong></p>
-    </div>
-  `;
-
-  try {
-    const { error } = await client.emails.send({
-      from: `Des O'Sullivan <${fromEmail}>`,
-      to,
-      subject: "Confirm your email for Giant Fish & Happiness",
-      html,
-    });
-
-    if (error) {
-      console.error("Verification email send failed:", error);
-      return { ok: false, error: error.message };
-    }
-    return { ok: true };
-  } catch (err) {
-    console.error("Verification email send error:", err);
-    return { ok: false, error: "Failed to send verification email." };
-  }
-}
-
-export async function sendReviewLinkEmail(
-  to: string,
-  name: string,
-  submitUrl: string
-): Promise<{ ok: boolean; error?: string }> {
-  const client = getResendClient();
-  if (!client) {
-    return { ok: false, error: "Resend not configured." };
-  }
-
-  const fromEmail = process.env.RESEND_FROM_EMAIL || "desmond@cqfleet.com";
-
-  const html = `
-    <div style="font-family: Georgia, 'Times New Roman', serif; max-width: 600px; margin: 0 auto; padding: 32px 24px; color: #1a1a1a; line-height: 1.7;">
-      <h1 style="font-size: 22px; margin-bottom: 20px; color: #1a3a5c;">Submit your review link</h1>
-      <p>Hi ${name},</p>
-      <p>Thanks again for reading the advance copy. When you're ready to post your honest Amazon review and claim your spot on the Celtic Quest launch party trip, use the personal link below:</p>
-      <p style="margin: 28px 0;">
-        <a href="${submitUrl}" style="background:#1a3a5c;color:#fff;padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:bold;">Submit my review link</a>
-      </p>
-      <p style="color:#555;font-size:14px;">This link is unique to you — please don't share it.</p>
-      <p style="margin-top:32px;">Tight lines,<br/><strong>Des O'Sullivan</strong></p>
-    </div>
-  `;
-
-  try {
-    const { error } = await client.emails.send({
-      from: `Des O'Sullivan <${fromEmail}>`,
-      to,
-      subject: "Your personal review submission link",
-      html,
-    });
-    if (error) {
-      console.error("Review link email send failed:", error);
-      return { ok: false, error: error.message };
-    }
-    return { ok: true };
-  } catch (err) {
-    console.error("Review link email send error:", err);
-    return { ok: false, error: "Failed to send review link email." };
-  }
-}
-
 export async function sendCouponEmail(
   to: string,
   firstName: string,
@@ -187,7 +100,7 @@ export async function sendCouponEmail(
       from: `Des O'Sullivan <${fromEmail}>`,
       replyTo: "captdes@gmail.com",
       to,
-      subject: "Your FREE $20 Celtic Quest Fishing Coupon — Thanks for Reading!",
+      subject: "Your FREE $20 Celtic Quest Fishing Coupon - Thanks for Reading!",
       html: buildCouponEmailHtml(firstName, couponCode),
     });
 
@@ -212,7 +125,7 @@ function buildCouponEmailHtml(firstName: string, couponCode: string): string {
 
       <p>Thank you so much for reading <strong>Giant Fish &amp; Happiness</strong>. It means the world to me.</p>
 
-      <p>As promised &mdash; here&rsquo;s your FREE $20 Celtic Quest fishing coupon:</p>
+      <p>As promised, here&rsquo;s your FREE $20 Celtic Quest fishing coupon:</p>
 
       <div style="background: #1a3a5c; color: #ffffff; text-align: center; padding: 24px 20px; border-radius: 12px; margin: 28px 0;">
         <div style="font-family: 'Courier New', Courier, monospace; font-size: 28px; font-weight: bold; letter-spacing: 3px; margin-bottom: 8px;">${couponCode}</div>
@@ -226,7 +139,7 @@ function buildCouponEmailHtml(firstName: string, couponCode: string): string {
         <li>Enter your coupon code at checkout</li>
       </ol>
 
-      <p>Good on any trip, any date &mdash; no expiration.</p>
+      <p>Good on any trip, any date. No expiration.</p>
 
       <p>Come fishing with us. The water is beautiful out here.</p>
 
@@ -256,14 +169,14 @@ function buildArcEmailHtml(name: string, baseUrl: string, customMessage?: string
 
       <p>Attached to this email is your advance copy of <strong>Giant Fish &amp; Happiness</strong>. I truly hope you enjoy reading it.</p>
 
-      <p>We plan on launching on <strong>May 26th, 2026</strong>, and it would mean the world to me if you could read it and, when we launch, take a few minutes to post an honest review for me on Amazon. Even just a couple of sentences would help spread the word more than you know.</p>
+      <p>We plan on launching on <strong>May 4th, 2026</strong>, and it would mean the world to me if you could read it and, when we launch, take a few minutes to post an honest review for me on Amazon. Even just a couple of sentences would help spread the word more than you know.</p>
 
       <p>To say thanks — not only do you get this free advance copy, but <strong>I'll be hosting a launch party on the Celtic Quest over the summer</strong>. A free trip on me to come hang out, do some fishing together, and have a great time. All you need to do is post your review and submit the link so I know you did it.</p>
 
       <h2 style="font-size: 18px; margin-top: 32px; color: #1a3a5c;">What to Do</h2>
       <ol style="padding-left: 20px;">
         <li>Read the book (attached PDF)</li>
-        <li>When we launch on May 26th, post an honest review on Amazon</li>
+        <li>When we launch on May 4th, post an honest review on Amazon</li>
         <li><a href="${baseUrl}/submit-review" style="color: #2563eb;">Submit your review link here</a> to confirm your spot on the launch party trip</li>
       </ol>
 

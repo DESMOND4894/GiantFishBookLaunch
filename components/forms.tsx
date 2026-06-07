@@ -279,7 +279,7 @@ export function SettingsForm({
         </select>
       </div>
       <div className="field"><label htmlFor="settings-admin-contact">Admin contact</label><input id="settings-admin-contact" name="admin_contact" defaultValue={adminContact || ""} /></div>
-      <div className="field" style={{ gridColumn: "1 / -1" }}><label htmlFor="settings-memorial-day-note">Memorial Day note</label><textarea id="settings-memorial-day-note" name="memorial_day_note" defaultValue={memorialDayNote || ""} /></div>
+      <div className="field" style={{ gridColumn: "1 / -1" }}><label htmlFor="settings-memorial-day-note">Launch note</label><textarea id="settings-memorial-day-note" name="memorial_day_note" defaultValue={memorialDayNote || ""} /></div>
       <div className="actions" style={{ gridColumn: "1 / -1" }}><button className="button" type="submit">Save settings</button></div>
     </form>
   );

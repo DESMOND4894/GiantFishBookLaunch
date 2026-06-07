@@ -1,83 +1,70 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createServerClient, type CookieOptions } from "@supabase/ssr";
 
-// Paths that never require a session.
-// - Public forms (intake from strangers)
-// - The login page itself
-// - /join-launch-team/verify (verification click-through)
-// - /submit-review (takes its own token param)
 const PUBLIC_PATH_PREFIXES = [
-  "/login",
-  "/forgot-password",
-  "/reset-password",
   "/claim",
+  "/confirm-launch-party",
   "/submit-review",
   "/join-launch-team",
   "/proof-of-purchase",
+  "/rsvp",
 ];
 
-// Asset + framework paths that must never be gated.
-const PUBLIC_FILE = /\.(png|jpg|jpeg|gif|svg|webp|ico|css|js|map|txt|xml|woff|woff2|ttf|otf|pdf)$/;
-
 function isPublicPath(pathname: string) {
-  if (pathname === "/") return false;
-  if (pathname.startsWith("/_next")) return true;
-  // API routes MUST self-gate with requireAdmin() (security rule #12).
-  // We pass them through middleware so handlers can return 401 JSON
-  // instead of a 307 redirect to /login — better UX for API clients.
-  if (pathname.startsWith("/api/")) return true;
-  if (PUBLIC_FILE.test(pathname)) return true;
   return PUBLIC_PATH_PREFIXES.some(
     (prefix) => pathname === prefix || pathname.startsWith(prefix + "/")
   );
 }
 
-export async function middleware(request: NextRequest) {
+function unauthorized() {
+  return new NextResponse("Authentication required", {
+    status: 401,
+    headers: {
+      "WWW-Authenticate": 'Basic realm="Giant Fish Command Center", charset="UTF-8"',
+    },
+  });
+}
+
+export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (isPublicPath(pathname)) {
     return NextResponse.next();
   }
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const expectedUser = process.env.DASHBOARD_USERNAME;
+  const expectedPass = process.env.DASHBOARD_PASSWORD;
 
-  if (!url || !anonKey) {
+  if (!expectedUser || !expectedPass) {
     return new NextResponse(
-      "Auth is not configured (NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY missing).",
+      "Dashboard auth not configured. Set DASHBOARD_USERNAME and DASHBOARD_PASSWORD.",
       { status: 503 }
     );
   }
 
-  const response = NextResponse.next();
+  const authHeader = request.headers.get("authorization") || "";
+  const [scheme, encoded] = authHeader.split(" ");
 
-  const supabase = createServerClient(url, anonKey, {
-    cookies: {
-      get(name: string) {
-        return request.cookies.get(name)?.value;
-      },
-      set(name: string, value: string, options: CookieOptions) {
-        response.cookies.set({ name, value, ...options });
-      },
-      remove(name: string, options: CookieOptions) {
-        response.cookies.set({ name, value: "", ...options, maxAge: 0 });
-      },
-    },
-  });
-
-  const { data } = await supabase.auth.getUser();
-
-  if (!data.user) {
-    const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("next", pathname + request.nextUrl.search);
-    return NextResponse.redirect(loginUrl);
+  if (scheme === "Basic" && encoded) {
+    try {
+      const decoded = atob(encoded);
+      const sep = decoded.indexOf(":");
+      if (sep !== -1) {
+        const user = decoded.slice(0, sep);
+        const pass = decoded.slice(sep + 1);
+        if (user === expectedUser && pass === expectedPass) {
+          return NextResponse.next();
+        }
+      }
+    } catch {
+      // fall through to 401
+    }
   }
 
-  return response;
+  return unauthorized();
 }
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:png|jpg|jpeg|gif|svg|webp|ico|css|js|map|txt|xml|woff|woff2|ttf|otf|pdf)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:png|jpg|jpeg|gif|svg|webp|ico|css|js|map|txt|xml|woff|woff2|ttf|otf)$).*)",
   ],
 };
