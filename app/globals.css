@@ -614,6 +614,22 @@ th {
   margin-bottom: 2px;
 }
 
+/* RSVP page has no cover image — keep hero text and form in one centered column */
+.rsvp-page .lt-hero-inner {
+  grid-template-columns: 1fr;
+  max-width: 600px;
+}
+
+.rsvp-page .lt-form-section {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.rsvp-page .lt-hook,
+.rsvp-page .rsvp-details {
+  max-width: 100%;
+}
+
 .lt-cover-wrap {
   flex-shrink: 0;
 }

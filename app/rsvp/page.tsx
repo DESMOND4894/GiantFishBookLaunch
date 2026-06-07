@@ -2,7 +2,7 @@ import { RsvpForm } from "@/components/rsvp-form";
 
 export default function RsvpPage() {
   return (
-    <div className="lt-landing">
+    <div className="lt-landing rsvp-page">
       <section className="lt-hero">
         <div className="lt-hero-glow" />
         <div className="lt-hero-inner">
