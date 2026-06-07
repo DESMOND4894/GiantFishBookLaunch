@@ -24,6 +24,16 @@ export default async function RsvpsPage({ searchParams }: PageProps) {
       {saved === "rsvp-added" && <p className="success-banner">RSVP added.</p>}
       {saved === "rsvp-removed" && <p className="success-banner">RSVP removed.</p>}
 
+      <section className="panel">
+        <h3>Your shareable RSVP form link</h3>
+        <p className="small">
+          Send this to people so they can RSVP — paste it into your email:{" "}
+          <a href="https://giant-fish-book-launch.vercel.app/rsvp" target="_blank" rel="noreferrer">
+            https://giant-fish-book-launch.vercel.app/rsvp
+          </a>
+        </p>
+      </section>
+
       <div className="card-grid compact-cards">
         <MetricCard label="People coming" value={totalPeople} note="Total seats across all parties." />
         <MetricCard label="RSVPs" value={rsvps.length} note="Number of separate replies." />
