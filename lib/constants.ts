@@ -5,11 +5,8 @@ export const NAV_ITEMS = [
   { href: "/tasks", label: "Tasks / Timeline" },
   { href: "/launch-team", label: "Launch Team" },
   { href: "/outreach", label: "Outreach" },
-  { href: "/content", label: "Content" },
-  { href: "/purchases", label: "Purchases" },
   { href: "/admin/coupons", label: "Coupons" },
   { href: "/admin/rsvps", label: "RSVPs" },
-  { href: "/reviews", label: "Reviews" },
   { href: "/activity", label: "Activity" },
   { href: "/settings", label: "Settings" }
 ] as const;
