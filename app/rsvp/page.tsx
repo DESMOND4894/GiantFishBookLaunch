@@ -21,6 +21,11 @@ export default function RsvpPage() {
             <p className="lt-hook">
               Just let me know you&apos;re coming so I can get a headcount.
             </p>
+            <div className="rsvp-details">
+              <p><span>When</span> Friday, June 12, 2026 · 4:30&ndash;8:30 p.m.</p>
+              <p><span>Where</span> 118 West Broadway, Port Jefferson, New York</p>
+              <p><span>Food &amp; Drink</span> Light snacks and hors d&apos;oeuvres will be served. BYOB.</p>
+            </div>
           </div>
         </div>
       </section>
