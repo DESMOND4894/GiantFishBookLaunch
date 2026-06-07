@@ -1,12 +1,6 @@
 import { RsvpForm } from "@/components/rsvp-form";
-import { getRsvps } from "@/lib/data";
 
-export const dynamic = "force-dynamic";
-
-export default async function RsvpPage() {
-  const rsvps = await getRsvps();
-  const totalPeople = rsvps.reduce((sum, r) => sum + (r.party_size || 1), 0);
-
+export default function RsvpPage() {
   return (
     <div className="lt-landing">
       <section className="lt-hero">
@@ -27,12 +21,6 @@ export default async function RsvpPage() {
             <p className="lt-hook">
               Just let me know you&apos;re coming so I can get a headcount.
             </p>
-            <div className="rsvp-counter">
-              <span className="rsvp-counter-number">{totalPeople}</span>
-              <span className="rsvp-counter-label">
-                {totalPeople === 1 ? "person coming so far" : "people coming so far"}
-              </span>
-            </div>
           </div>
         </div>
       </section>
